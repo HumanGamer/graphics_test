@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # sdl
 add_subdirectory(deps/sdl)
+target_compile_definitions(SDL2-static PUBLIC HAVE_LIBC) # To avoid linker error
 include_directories(deps/sdl/include)
 
 # bgfx
