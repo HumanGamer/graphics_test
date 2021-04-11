@@ -8,7 +8,7 @@
 
 GraphicsSystem* GFX = new GraphicsSystem();
 
-GraphicsSystem::GraphicsSystem() : mInitialized(false), mWindow(nullptr), mWidth(800), mHeight(600)
+GraphicsSystem::GraphicsSystem() : mInitialized(false), mWindow(nullptr), mWidth(800), mHeight(600), mWindowClosed(true)
 {
 
 }
@@ -28,6 +28,7 @@ bool GraphicsSystem::init(uint32_t width, uint32_t height)
 
     mWidth = width;
     mHeight = height;
+    mWindowClosed = false;
 
     mWindow = SDL_CreateWindow("GAME", SDL_WINDOWPOS_CENTERED,
                                SDL_WINDOWPOS_CENTERED,
@@ -44,6 +45,7 @@ bool GraphicsSystem::init(uint32_t width, uint32_t height)
     if (!bgfx::init(init))
     {
         std::cout << "Error initializing BGFX: %s\n";
+        shutdown();
         return false;
     }
 
@@ -67,10 +69,39 @@ bool GraphicsSystem::resize(uint32_t width, uint32_t height)
     return false;
 }
 
+void GraphicsSystem::update()
+{
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+            case SDL_WINDOWEVENT:
+            {
+                const SDL_WindowEvent &wev = event.window;
+                switch (wev.event)
+                {
+                    case SDL_WINDOWEVENT_RESIZED:
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        GFX->resize(wev.data1, wev.data2);
+                        break;
+                }
+                break;
+            }
+            case SDL_QUIT:
+                mWindowClosed = true;
+                break;
+        }
+    }
+}
+
 void GraphicsSystem::shutdown()
 {
     if (!mInitialized)
         return;
+
+    mWindowClosed = true;
 
     //bgfx::shutdown(); // sometimes crashes on quit
     GFXHelpers::SDLDestroyWindow(mWindow);
