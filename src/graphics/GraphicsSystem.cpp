@@ -1,10 +1,10 @@
 #include "GraphicsSystem.hpp"
 #include <SDL.h>
 #include <bgfx/bgfx.h>
+#include <bgfx/platform.h>
+#include "gfxhelpers.hpp"
 
 #include <iostream>
-
-#include "sdl_bgfx_setup.h"
 
 GraphicsSystem* GFX = new GraphicsSystem();
 
@@ -35,14 +35,17 @@ bool GraphicsSystem::init(uint32_t width, uint32_t height)
                                SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     bgfx::renderFrame();
-    sdlSetWindow(mWindow);
+    GFXHelpers::SDLSetWindow(mWindow);
 
     bgfx::Init init;
     init.resolution.width = mWidth;
     init.resolution.height = mHeight;
     init.resolution.reset = BGFX_RESET_VSYNC;
     if (!bgfx::init(init))
+    {
+        std::cout << "Error initializing BGFX: %s\n";
         return false;
+    }
 
     mInitialized = true;
     return true;
@@ -70,7 +73,7 @@ void GraphicsSystem::shutdown()
         return;
 
     //bgfx::shutdown(); // sometimes crashes on quit
-    sdlDestroyWindow(mWindow);
+    GFXHelpers::SDLDestroyWindow(mWindow);
     SDL_Quit();
 
     mInitialized = false;
