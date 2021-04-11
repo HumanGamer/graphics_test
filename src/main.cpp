@@ -2,7 +2,6 @@
 #include <SDL.h>
 #include <bgfx/bgfx.h>
 
-#include "graphics/gfxhelpers.hpp"
 #include "graphics/GraphicsSystem.hpp"
 
 void render();
