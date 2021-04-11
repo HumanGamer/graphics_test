@@ -3,4 +3,15 @@ project(graphics_test)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# sdl
+add_subdirectory(deps/sdl)
+include_directories(deps/sdl/include)
+
+# bgfx
+add_subdirectory(deps/bgfx.cmake)
+include_directories(deps/bgfx.cmake/bgfx/include)
+include_directories(deps/bgfx.cmake/bimg/include)
+include_directories(deps/bgfx.cmake/bx/include)
+
 add_executable(graphics_test src/main.cpp)
+target_link_libraries(graphics_test PUBLIC SDL2-static SDL2main bgfx bimg bx)
