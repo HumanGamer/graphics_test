@@ -14,5 +14,18 @@ include_directories(deps/bgfx.cmake/bgfx/include)
 include_directories(deps/bgfx.cmake/bimg/include)
 include_directories(deps/bgfx.cmake/bx/include)
 
-add_executable(graphics_test src/main.cpp src/graphics/GraphicsSystem.cpp src/graphics/gfxhelpers.cpp)
+set(MAIN_SRC
+    # Sources
+    src/main.cpp
+    src/graphics/GraphicsSystem.cpp
+    src/graphics/gfxhelpers.cpp
+    src/game/Game.cpp
+
+    # Headers
+    src/graphics/GraphicsSystem.hpp
+    src/graphics/gfxhelpers.hpp
+    src/game/Game.hpp
+)
+
+add_executable(graphics_test ${MAIN_SRC})
 target_link_libraries(graphics_test PUBLIC SDL2-static SDL2main bgfx bimg bx)

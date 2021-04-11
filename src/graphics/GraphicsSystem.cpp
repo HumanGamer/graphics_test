@@ -6,8 +6,10 @@
 
 #include <iostream>
 
+//-------------------------------------------
 GraphicsSystem* GFX = new GraphicsSystem();
 
+//-------------------------------------------
 GraphicsSystem::GraphicsSystem() : mInitialized(false), mWindow(nullptr), mWidth(800), mHeight(600), mWindowClosed(true)
 {
 
@@ -18,6 +20,7 @@ GraphicsSystem::~GraphicsSystem()
     shutdown();
 }
 
+//-------------------------------------------
 bool GraphicsSystem::init(uint32_t width, uint32_t height)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -53,6 +56,7 @@ bool GraphicsSystem::init(uint32_t width, uint32_t height)
     return true;
 }
 
+//-------------------------------------------
 bool GraphicsSystem::resize(uint32_t width, uint32_t height)
 {
     if (width != mWidth || height != mHeight)
@@ -96,6 +100,7 @@ void GraphicsSystem::update()
     }
 }
 
+//-------------------------------------------
 void GraphicsSystem::shutdown()
 {
     if (!mInitialized)
