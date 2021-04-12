@@ -68,12 +68,9 @@ static const uint16_t s_cubeTriList[] = {
 
 bgfx::VertexBufferHandle vbh;
 bgfx::IndexBufferHandle ibh;
-bool Game::init(int argc, const char **argv)
+void reinitGfx()
 {
-    if (!GFX->init(800, 600))
-        return false;
-
-    mBasicShader = new Shader("shaders/basic");
+    // TODO: Handle reinitializing graphics automatically when switching renderer
 
     bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
     bgfx::setViewRect(0, 0, 0, bgfx::BackbufferRatio::Equal);
@@ -82,6 +79,16 @@ bool Game::init(int argc, const char **argv)
 
     vbh = bgfx::createVertexBuffer(bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)), PosColorVertex::ms_layout);
     ibh = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList)));
+}
+
+bool Game::init(int argc, const char **argv)
+{
+    if (!GFX->init(800, 600))
+        return false;
+
+    mBasicShader = new Shader("shaders/basic");
+
+    reinitGfx();
 
     return true;
 }
@@ -91,8 +98,10 @@ bool Game::update()
     render();
     GFX->update();
 
-    //if (!GFX->setRendererType(bgfx::RendererType::Vulkan))
-    //    return false;
+//    if (!GFX->setRendererType(bgfx::RendererType::Vulkan))
+//        return false;
+//    else
+//        reinitGfx();
 
     if (GFX->closeRequested())
         return false;
@@ -102,13 +111,13 @@ bool Game::update()
 
 void Game::render()
 {
-    const bx::Vec3 at = {0.0f, 0.0f, 0.0f};
-    const bx::Vec3 eye = {0.0f, 2.0f, -7.0f};
+    const bx::Vec3 cameraTarget = {0.0f, 0.0f, 0.0f};
+    const bx::Vec3 cameraPosition = {0.0f, 2.0f, -7.0f};
 
     // Set view and projection matrices
     {
         float view[16];
-        bx::mtxLookAt(view, eye, at);
+        bx::mtxLookAt(view, cameraPosition, cameraTarget);
 
         float proj[16];
         bx::mtxProj(proj, 60.0f, float(GFX->getWindowWidth()) / float(GFX->getWindowHeight()), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);

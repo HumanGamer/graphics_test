@@ -110,6 +110,8 @@ bool GraphicsSystem::setRendererType(bgfx::RendererType::Enum type)
 //-------------------------------------------
 void GraphicsSystem::submit(bgfx::ViewId viewId, Shader* shader, uint32_t _depth, uint8_t _flags)
 {
+    // TODO: Instead of recompiling shader when submitting, keep a list of all loaded
+    //       shaders and recompile them all at once when switching renderers
     if (shader->mRendererType != mRendererType)
         shader->recompile();
 
