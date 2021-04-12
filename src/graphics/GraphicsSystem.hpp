@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <bgfx/bgfx.h>
 
 struct SDL_Window;
 
@@ -13,7 +14,12 @@ public:
     /// Initialize graphics system
     /// @param width Window width
     /// @param height Window height
-    bool init(uint32_t width, uint32_t height);
+    bool init(uint32_t width, uint32_t height, bgfx::RendererType::Enum type = bgfx::RendererType::Count);
+
+    /// Set rendering backend
+    /// @param type Renderer Type
+    /// @return true if successful, false if failed
+    bool setRendererType(bgfx::RendererType::Enum type);
 
     /// Resize window
     /// @param width Window width

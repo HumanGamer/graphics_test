@@ -21,11 +21,11 @@ GraphicsSystem::~GraphicsSystem()
 }
 
 //-------------------------------------------
-bool GraphicsSystem::init(uint32_t width, uint32_t height)
+bool GraphicsSystem::init(uint32_t width, uint32_t height, bgfx::RendererType::Enum type)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-        std::cout << "Error initializing SDL: %s\n", SDL_GetError();
+        std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
         return false;
     }
 
@@ -38,21 +38,70 @@ bool GraphicsSystem::init(uint32_t width, uint32_t height)
                                mWidth, mHeight,
                                SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
-    bgfx::renderFrame();
+    //bgfx::renderFrame();
     GFXHelpers::SDLSetWindow(mWindow);
 
     bgfx::Init init;
+    init.type = type;
+    init.resolution.width = mWidth;
+    init.resolution.height = mHeight;
+    init.resolution.reset = BGFX_RESET_VSYNC;
+    if (!bgfx::init(init))
+    {
+        std::cout << "Error initializing BGFX" << std::endl;
+        shutdown();
+        return false;
+    }
+
+    mInitialized = true;
+    return true;
+}
+
+bool GraphicsSystem::setRendererType(bgfx::RendererType::Enum type)
+{
+    bgfx::RendererType::Enum oldType = bgfx::getRendererType();
+    if (type == oldType)
+        return true;
+
+    bgfx::shutdown(); // calling this here as calling it on exit crashes sometimes
+    shutdown();
+    if (!init(mWidth, mHeight, type) && !init(mWidth, mHeight, oldType))
+        return false;
+
+    return true;
+
+    // The following doesn't work. Guess we do have to re-create the window anyway.
+    /*bgfx::shutdown();
+
+    //bgfx::renderFrame();
+    GFXHelpers::SDLSetWindow(mWindow);
+
+    bgfx::Init init;
+    init.type = type;
     init.resolution.width = mWidth;
     init.resolution.height = mHeight;
     init.resolution.reset = BGFX_RESET_VSYNC;
     if (!bgfx::init(init))
     {
         std::cout << "Error initializing BGFX: %s\n";
-        shutdown();
-        return false;
-    }
+        bgfx::shutdown();
 
-    mInitialized = true;
+        bgfx::renderFrame();
+        GFXHelpers::SDLSetWindow(mWindow);
+
+        init.type = oldType;
+        init.resolution.width = mWidth;
+        init.resolution.height = mHeight;
+        init.resolution.reset = BGFX_RESET_VSYNC;
+        if (!bgfx::init(init))
+        {
+            std::cout << "Error initializing BGFX: %s\n";
+            shutdown();
+
+            return false;
+        }
+    }*/
+
     return true;
 }
 
@@ -75,6 +124,7 @@ bool GraphicsSystem::resize(uint32_t width, uint32_t height)
 
 void GraphicsSystem::update()
 {
+    bgfx::frame();
     SDL_Event event;
 
     while (SDL_PollEvent(&event))

@@ -33,6 +33,9 @@ bool Game::update()
     render();
     GFX->update();
 
+    //if (!GFX->setRendererType(bgfx::RendererType::Vulkan))
+    //    return false;
+
     if (GFX->closeRequested())
         return false;
 
@@ -43,9 +46,7 @@ void Game::render()
 {
     bgfx::touch(0);
     bgfx::dbgTextClear();
-    bgfx::dbgTextPrintf(0, 0, 0x0f, "Test");
+    bgfx::dbgTextPrintf(0, 0, 0x0F, "Rendered with: %s", bgfx::getRendererName(bgfx::getRendererType()));
 
     bgfx::setDebug(BGFX_DEBUG_TEXT);
-
-    bgfx::frame();
 }
