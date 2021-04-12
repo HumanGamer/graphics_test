@@ -38,6 +38,9 @@ public:
     /// Shutdown graphics system
     void shutdown();
 
+    uint32_t getWindowWidth() { return mWidth; }
+    uint32_t getWindowHeight() { return mHeight; }
+
 private:
     SDL_Window* mWindow;
 
