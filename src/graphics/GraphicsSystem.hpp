@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <bgfx/bgfx.h>
+#include "../shaders/Shader.hpp"
 
 struct SDL_Window;
 
@@ -21,6 +22,8 @@ public:
     /// @return true if successful, false if failed
     bool setRendererType(bgfx::RendererType::Enum type);
 
+    void submit(bgfx::ViewId viewId, Shader* shader, uint32_t _depth = 0, uint8_t _flags  = BGFX_DISCARD_ALL);
+
     /// Resize window
     /// @param width Window width
     /// @param height Window height
@@ -38,6 +41,7 @@ public:
 private:
     SDL_Window* mWindow;
 
+    bgfx::RendererType::Enum mRendererType;
     bool mInitialized;
     bool mWindowClosed;
     uint32_t mWidth, mHeight;

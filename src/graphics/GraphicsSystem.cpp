@@ -53,6 +53,8 @@ bool GraphicsSystem::init(uint32_t width, uint32_t height, bgfx::RendererType::E
         return false;
     }
 
+    mRendererType = bgfx::getRendererType();
+
     mInitialized = true;
     return true;
 }
@@ -106,6 +108,14 @@ bool GraphicsSystem::setRendererType(bgfx::RendererType::Enum type)
 }
 
 //-------------------------------------------
+void GraphicsSystem::submit(bgfx::ViewId viewId, Shader* shader, uint32_t _depth, uint8_t _flags)
+{
+    if (shader->mRendererType != mRendererType)
+        shader->recompile();
+
+    bgfx::submit(viewId, shader->mProgram, _depth, _flags);
+}
+
 bool GraphicsSystem::resize(uint32_t width, uint32_t height)
 {
     if (width != mWidth || height != mHeight)

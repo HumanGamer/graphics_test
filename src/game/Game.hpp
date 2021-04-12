@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../shaders/Shader.hpp"
+
 class Game
 {
 public:
@@ -16,4 +18,6 @@ private:
 
     /// Render Game
     void render();
+
+    Shader* mBasicShader;
 };
